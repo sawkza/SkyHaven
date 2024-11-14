@@ -1,4 +1,5 @@
 import os
+import requests
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from geopy.distance import geodesic
 
@@ -14,19 +15,24 @@ def is_in_alert_area(aircraft_location, user_location, radius_km):
 
 @app.route('/')
 def home():
-    return render_template('index.html')  # Ensure 'index.html' is in the templates folder
+    return render_template('index.html')
 
 @app.route('/manifest.json')
 def manifest():
-    return send_from_directory('static', 'manifest.json')  # Serve manifest.json from static folder
+    return send_from_directory('static', 'manifest.json')
 
 @app.route('/location', methods=['POST'])
 def check_aircraft():
     try:
-        # Retrieve location and radius data from the front end
+        # Log incoming data for debugging
         data = request.get_json()
+        print("Received data:", data)
+
+        if not data or 'latitude' not in data or 'longitude' not in data:
+            return jsonify({"error": "Invalid request data"}), 400
+
         user_location = (data['latitude'], data['longitude'])
-        alert_radius_km = data.get('radius', 100)  # Default radius if none provided
+        alert_radius_km = data.get('radius', 100)
 
         # Fetch aircraft data from OpenSky API
         response = requests.get(url)
@@ -43,9 +49,8 @@ def check_aircraft():
             altitude = aircraft[7]
             velocity = aircraft[9]
 
-            if latitude and longitude:  # Ensure location data is present
+            if latitude and longitude:
                 aircraft_location = (latitude, longitude)
-                # Check if the aircraft is within the alert radius
                 if is_in_alert_area(aircraft_location, user_location, alert_radius_km):
                     alerts.append({
                         "icao24": icao24,
@@ -58,9 +63,12 @@ def check_aircraft():
         return jsonify({"alerts": alerts})
 
     except requests.exceptions.RequestException as e:
-        return jsonify({"error": str(e)}), 500
+        print("Error fetching aircraft data:", str(e))
+        return jsonify({"error": "Failed to fetch aircraft data"}), 500
+    except Exception as e:
+        print("Unexpected error:", str(e))
+        return jsonify({"error": "An unexpected error occurred"}), 500
 
 if __name__ == '__main__':
-    # Use the PORT environment variable for Render
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
