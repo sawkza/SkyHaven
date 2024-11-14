@@ -1,76 +1,49 @@
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 import requests
 from geopy.distance import geodesic
 
 app = Flask(__name__)
+CORS(app) # Enable CORS for all routes
 
-# OpenSky API URL
 url = "https://opensky-network.org/api/states/all"
 
 def is_in_alert_area(aircraft_location, user_location, radius_km):
-    """Check if an aircraft is within the alert radius of the user's location."""
-    distance = geodesic(aircraft_location, user_location).kilometers
-    return distance <= radius_km
+distance = geodesic(aircraft_location, user_location).kilometers
+return distance <= radius_km
 
 @app.route('/')
 def home():
-    return render_template('index.html')  # Ensure 'index.html' is in the templates folder
+return render_template('index.html')
 
 @app.route('/location', methods=['POST'])
 def check_aircraft():
-    try:
-        # Retrieve location and radius data from the front end
-        data = request.get_json()
-        user_location = (data['latitude'], data['longitude'])
-        alert_radius_km = data.get('radius', 100)  # Default radius if none provided
+data = request.get_json()
+user_location = (data['latitude'], data['longitude'])
+alert_radius_km = data.get('radius', 8)
 
-        # Fetch aircraft data from OpenSky API
-        response = requests.get(url)
-        response.raise_for_status()
-        aircraft_data = response.json()
+try:
+response = requests.get(url)
+response.raise_for_status()
+aircraft_data = response.json()
+alerts = []
 
-        alerts = []
-        
-        # --- TESTING: Simulate an aircraft alert for verification ---
-        test_aircraft = {
-            "icao24": "test123",
-            "callsign": "TEST",
-            "origin_country": "Test Country",
-            "latitude": user_location[0] + 0.05,  # Offset slightly to simulate
-            "longitude": user_location[1] + 0.05,
-            "altitude": 1000,  # Test altitude in meters
-            "velocity": 250   # Test speed in m/s
-        }
-        aircraft_location = (test_aircraft["latitude"], test_aircraft["longitude"])
-        if is_in_alert_area(aircraft_location, user_location, alert_radius_km):
-            alerts.append(test_aircraft)
-        
-        # --- Real aircraft processing below (unchanged) ---
-        for aircraft in aircraft_data["states"]:
-            icao24 = aircraft[0]
-            callsign = aircraft[1].strip()
-            origin_country = aircraft[2]
-            latitude = aircraft[6]
-            longitude = aircraft[5]
-            altitude = aircraft[7]
-            velocity = aircraft[9]
+for aircraft in aircraft_data["states"]:
+if aircraft[5] and aircraft[6]:
+aircraft_location = (aircraft[6], aircraft[5])
+if is_in_alert_area(aircraft_location, user_location, alert_radius_km):
+alerts.append({
+"icao24": aircraft[0],
+"callsign": aircraft[1].strip(),
+"origin_country": aircraft[2],
+"altitude": aircraft[7],
+"velocity": aircraft[9]
+})
 
-            if latitude and longitude:  # Ensure location data is present
-                aircraft_location = (latitude, longitude)
-                # Check if the aircraft is within the alert radius
-                if is_in_alert_area(aircraft_location, user_location, alert_radius_km):
-                    alerts.append({
-                        "icao24": icao24,
-                        "callsign": callsign,
-                        "origin_country": origin_country,
-                        "altitude": altitude,
-                        "velocity": velocity
-                    })
-
-        return jsonify({"alerts": alerts})
-
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": str(e)}), 500
+return jsonify({"alerts": alerts})
+except Exception as e:
+print(f"Error: {e}")
+return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+app.run(debug=True)
