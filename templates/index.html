@@ -6,8 +6,8 @@
   <title>SkyHaven - Airspace Monitor</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="manifest" href="/manifest.json">
+
   <style>
-    /* Styling */
     body {
       display: flex;
       justify-content: center;
@@ -27,22 +27,16 @@
     }
     h1 {
       color: #4CAF50;
-      margin: 0 0 10px;
+      margin: 0 0 20px;
     }
     h2 {
       font-size: 1.2em;
       color: #333;
-      margin: 10px 0 15px;
+      margin: 10px 0 20px;
     }
     p {
       color: #777;
       font-size: 0.9em;
-      margin: 10px 0;
-    }
-    .advice {
-      font-size: 0.9em;
-      color: #555;
-      margin: 15px 0;
     }
     button {
       background-color: #007bff;
@@ -57,19 +51,13 @@
       background-color: #0056b3;
     }
     #radiusInput {
-      margin-top: 10px;
+      margin-top: 15px;
       padding: 8px;
       border-radius: 5px;
       border: 1px solid #ccc;
       width: 100%;
       max-width: 200px;
       font-size: 1em;
-    }
-    .success-message {
-      color: green;
-      font-size: 1em;
-      display: none;
-      margin-top: 10px;
     }
   </style>
 </head>
@@ -78,39 +66,29 @@
     <h1>SkyHaven - Airspace Monitor</h1>
     <h2>အန္တရာယ်ရှိသော လေယာဥ်များ အသုံးပြုသူ၏ပိုက်နက် Area ထဲသို့ ဝင်ရောက်လာပါက အသိပေးသော စနစ်</h2>
     <button onclick="getUserLocation()">Share Location</button>
-
+    
     <div>
       <label for="radiusInput">Set Alert Radius (km):</label>
       <input type="number" id="radiusInput" placeholder="e.g., 100" onchange="updateRadius()" />
-    </div>
-
-    <button class="ok-button" id="okButton" onclick="confirmSettings()">OK</button>
-    
-    <div class="advice">
-      <p>Kmနေရာတွင်၈ကိုရေးရန်အကြံပြုပါသည် (We advise setting the radius to 8 km)</p>
+      <p>Kmနေရာတွင်15မှ20ကိုရေးရန်အကြံပြုပါသည် (We recommend setting the range to 20 km)</p>
       <p>1 mile = 1.60934 km</p>
     </div>
-
-    <p>Developed by Palaung Lay Company Limited</p>
-    <div class="success-message" id="successMessage">အောင်မြင်ပါသည် - Location Shared Successfully!</div>
+    
+    <p>Developed by the Palaung Lay Company Limited</p>
   </div>
 
   <script>
-    let alertRadiusKm = 8; // Default recommended radius
-
-    if (Notification.permission === 'default' || Notification.permission === 'denied') {
-      Notification.requestPermission();
-    }
+    let alertRadiusKm = 100; // Default alert radius in kilometers
 
     function updateRadius() {
       const radiusInput = document.getElementById("radiusInput").value;
-      alertRadiusKm = radiusInput ? parseFloat(radiusInput) : 8;
-      document.getElementById("okButton").style.display = "inline-block";
+      alertRadiusKm = radiusInput ? parseFloat(radiusInput) : 100;
+      console.log("Alert radius updated to:", alertRadiusKm, "km");
     }
 
     function getUserLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sendLocation, handleError);
+        navigator.geolocation.getCurrentPosition(sendLocation);
       } else {
         alert("Geolocation is not supported by this browser.");
       }
@@ -120,7 +98,6 @@
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
-      // Use the Render deployment URL here
       fetch('https://skyhaven.onrender.com/location', {
         method: 'POST',
         headers: {
@@ -136,19 +113,6 @@
       .catch((error) => console.error('Error:', error));
     }
 
-    function confirmSettings() {
-      alert("Settings confirmed!");
-      document.getElementById("okButton").style.display = "none";
-    }
-
-    function showSuccessMessage() {
-      const successMessage = document.getElementById("successMessage");
-      successMessage.style.display = "block";
-      setTimeout(() => {
-        successMessage.style.display = "none";
-      }, 7000); // Display for 7 seconds
-    }
-
     function displayAircraftAlerts(alerts) {
       if (alerts.length > 0) {
         alerts.forEach(alert => {
@@ -162,38 +126,47 @@
 
     function alertNotification(message) {
       const notificationMessage = "လေယာဥ်တစ်စင်းသည် သင်၏ဧရိယာအတွင်း ဝင်ရောက်လာနေပါသည်!\n" + message;
-      const options = {
-        icon: '/static/icon-192x192.png',
-        badge: '/static/icon-192x192.png',
-        vibrate: [200, 100, 200],
-        tag: 'aircraft-alert'
-      };
+
+      // Play a sound for notification
+      const audio = new Audio('/static/alert.mp3');  // Ensure 'alert.mp3' is in the correct path
+      audio.play();
 
       if (Notification.permission === "granted") {
-        navigator.serviceWorker.getRegistration().then(registration => {
-          if (registration) {
-            registration.showNotification(notificationMessage, options);
+        new Notification(notificationMessage);
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            new Notification(notificationMessage);
           }
         });
-      } else {
-        alert(notificationMessage);
       }
+      alert(notificationMessage);  // Fallback alert
     }
 
-    function handleError(error) {
-      console.error("Geolocation error:", error);
-      alert("Failed to retrieve location.");
+    // Show a temporary success message
+    function showSuccessMessage() {
+      const successMessage = document.createElement('div');
+      successMessage.textContent = "အောင်မြင်ပါသည် (Location shared successfully)";
+      successMessage.style.position = "fixed";
+      successMessage.style.top = "20px";
+      successMessage.style.left = "50%";
+      successMessage.style.transform = "translateX(-50%)";
+      successMessage.style.padding = "10px 20px";
+      successMessage.style.backgroundColor = "#4CAF50";
+      successMessage.style.color = "#fff";
+      successMessage.style.borderRadius = "5px";
+      successMessage.style.zIndex = "1000";
+      document.body.appendChild(successMessage);
+
+      setTimeout(() => {
+        successMessage.remove();
+      }, 7000); // Show for 7 seconds
     }
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(error => {
-          console.error('Service Worker registration failed:', error);
-        });
-    }
+    // Temporary test for notification upon page load
+    window.addEventListener('load', () => {
+      alertNotification('Test notification: This is a temporary alert to verify notifications.');
+    });
   </script>
 </body>
 </html>
