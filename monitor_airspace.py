@@ -1,5 +1,5 @@
+import os
 from flask import Flask, request, jsonify, render_template, send_from_directory
-import requests
 from geopy.distance import geodesic
 
 app = Flask(__name__)
@@ -18,7 +18,7 @@ def home():
 
 @app.route('/manifest.json')
 def manifest():
-    return send_from_directory('static', 'manifest.json')
+    return send_from_directory('static', 'manifest.json')  # Serve manifest.json from static folder
 
 @app.route('/location', methods=['POST'])
 def check_aircraft():
@@ -61,4 +61,6 @@ def check_aircraft():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Use the PORT environment variable for Render
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
