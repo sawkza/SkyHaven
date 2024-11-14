@@ -1,40 +1,26 @@
-self.addEventListener('install', event => {
-  console.log('Service Worker installing...');
-  event.waitUntil(
-    caches.open('skyhaven-cache').then(cache => {
-      return cache.addAll([
-        '/',
-        '/index.html',
-        '/static/icon-192x192.png',
-        '/static/icon-512x512.png',
-        '/manifest.json'
-      ]);
-    })
-  );
+// Import Firebase scripts for messaging
+importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
+
+// Initialize Firebase with your Messaging Sender ID
+firebase.initializeApp({
+  messagingSenderId: '390818384586', // Replace with your actual sender ID from Firebase
 });
 
-self.addEventListener('activate', event => {
-  console.log('Service Worker activating...');
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cache => {
-          if (cache !== 'skyhaven-cache') {
-            console.log('Clearing old cache:', cache);
-            return caches.delete(cache);
-          }
-        })
-      );
-    })
-  );
-});
+// Retrieve Firebase Messaging instance
+const messaging = firebase.messaging();
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    }).catch(() => {
-      return caches.match('/index.html');
-    })
-  );
+// Add your VAPID key for browser authorization
+messaging.getToken({ vapidKey: 'BMlmHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg' });
+
+// Handle background messages
+messaging.onBackgroundMessage((payload) => {
+  console.log('Received background message: ', payload);
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: '/static/icon-192x192.png' // Update the icon path if necessary
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
