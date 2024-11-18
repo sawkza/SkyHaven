@@ -96,27 +96,39 @@
     </div>
 
     <script type="module">
-    // Import Firebase Messaging scripts
+    // Import Firebase scripts
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging.js";
 
-    const messaging = getMessaging();
+    const firebaseConfig = {
+        apiKey: "AIzaSyCxQD-mgdlGObPULe6SrkRz2pOIlW0e3qk",
+        authDomain: "skyhaven-project.firebaseapp.com",
+        projectId: "skyhaven-project",
+        storageBucket: "skyhaven-project.appspot.com",
+        messagingSenderId: "390818384586",
+        appId: "1:390818384586:web:6df306bb9062cfd77a0233",
+        measurementId: "G-ZYB43QHF3G"
+    };
 
-    // Register the service worker
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/static/service-worker.js')
             .then((registration) => {
                 console.log('Service Worker registered with scope:', registration.scope);
 
-                // Pass the registered service worker to Firebase Messaging
-                getToken(messaging, { 
-                    vapidKey: "BMImHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg", 
-                    serviceWorkerRegistration: registration 
+                // Retrieve the FCM token
+                getToken(messaging, {
+                    vapidKey: "BMImHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg",
+                    serviceWorkerRegistration: registration
                 })
                 .then((currentToken) => {
                     if (currentToken) {
                         console.log("FCM Registration Token:", currentToken);
                     } else {
-                        console.log("No registration token available. Request permission to generate one.");
+                        console.log("No registration token available.");
                     }
                 })
                 .catch((error) => {
@@ -124,10 +136,35 @@
                 });
             })
             .catch((error) => {
-                console.error('Service Worker registration failed:', error);
+                console.error("Service Worker registration failed:", error);
             });
-    } else {
-        console.error("Service Worker is not supported in this browser.");
+    }
+</script>
+
+<script>
+    // Define the missing functions
+
+    function updateRadius() {
+        console.log("Radius updated.");
+        // Add your radius update logic here
+    }
+
+    function confirmSettings() {
+        console.log("Settings confirmed.");
+        // Add your settings confirmation logic here
+    }
+
+    function getUserLocation() {
+        console.log("Getting user location...");
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                console.log("User location:", position.coords.latitude, position.coords.longitude);
+            }, (error) => {
+                console.error("Error getting location:", error);
+            });
+        } else {
+            console.error("Geolocation not supported.");
+        }
     }
 </script>
 
