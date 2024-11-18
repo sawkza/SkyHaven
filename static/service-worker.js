@@ -19,19 +19,6 @@ firebase.initializeApp(firebaseConfig);
 // Retrieve Firebase Messaging instance
 const messaging = firebase.messaging();
 
-// Add your VAPID key for browser authorization and log the token
-messaging.getToken({ vapidKey: "BMImHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg" })
-    .then((currentToken) => {
-        if (currentToken) {
-            console.log("FCM Registration Token:", currentToken);
-        } else {
-            console.log("No registration token available. Request permission to generate one.");
-        }
-    })
-    .catch((err) => {
-        console.error("Error retrieving FCM token:", err);
-    });
-
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
     console.log("Received background message: ", payload);

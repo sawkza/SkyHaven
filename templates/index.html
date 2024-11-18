@@ -95,109 +95,41 @@
         <div class="loader" id="loadingSpinner"></div>
     </div>
 
-    <script>
-        let alertRadiusKm = 8; // Default recommended radius
+    <script type="module">
+    // Import Firebase Messaging scripts
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging.js";
 
-        if (Notification.permission === 'default' || Notification.permission === 'denied') {
-            Notification.requestPermission();
-        }
+    const messaging = getMessaging();
 
-        function updateRadius() {
-            const radiusInput = document.getElementById("radiusInput").value;
-            alertRadiusKm = radiusInput ? parseFloat(radiusInput) : 8;
-            document.getElementById("okButton").style.display = "inline-block";
-        }
-
-        function getUserLocation() {
-            document.getElementById("loadingSpinner").style.display = "block"; // Show loading spinner
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(sendLocation, handleError);
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
-        }
-
-        function sendLocation(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            fetch('https://skyhaven.onrender.com/location', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ latitude, longitude, radius: alertRadiusKm }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                displayAircraftAlerts(data.alerts);
-                showSuccessMessage();
-            })
-            .catch((error) => console.error('Error:', error))
-            .finally(() => {
-                document.getElementById("loadingSpinner").style.display = "none"; // Hide loading spinner
-            });
-        }
-
-        function confirmSettings() {
-            alert("Settings confirmed!");
-            document.getElementById("okButton").style.display = "none";
-        }
-
-        function showSuccessMessage() {
-            const successMessage = document.getElementById("successMessage");
-            successMessage.style.display = "block";
-            setTimeout(() => {
-                successMessage.style.display = "none";
-            }, 7000); // Display for 7 seconds
-        }
-
-        function displayAircraftAlerts(alerts) {
-            if (alerts.length > 0) {
-                alerts.forEach(alert => {
-                    const message = `ALERT: Aircraft ${alert.icao24} (${alert.callsign}) from ${alert.origin_country} is in the area.\nAltitude: ${alert.altitude} meters, Speed: ${alert.velocity} m/s`;
-                    alertNotification(message);
-                });
-            } else {
-                console.log("No aircraft in your area.");
-            }
-        }
-
-        function alertNotification(message) {
-            const notificationMessage = "လေယာဥ်တစ်စင်းသည် သင်၏ဧရိယာအတွင်း ဝင်ရောက်လာနေပါသည်!\n" + message;
-            const options = {
-                icon: '/static/icon-192x192.png',
-                badge: '/static/icon-192x192.png',
-                vibrate: [200, 100, 200],
-                tag: 'aircraft-alert'
-            };
-
-            if (Notification.permission === "granted") {
-                navigator.serviceWorker.getRegistration().then(registration => {
-                    if (registration) {
-                        registration.showNotification(notificationMessage, options);
-                    }
-                });
-            } else {
-                alert(notificationMessage);
-            }
-        }
-
-        function handleError(error) {
-            document.getElementById("loadingSpinner").style.display = "none"; // Hide loading spinner
-            console.error("Geolocation error:", error);
-            alert("Failed to retrieve location.");
-        }
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/static/service-worker.js')
-            .then(registration => {
+    // Register the service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/service-worker.js')
+            .then((registration) => {
                 console.log('Service Worker registered with scope:', registration.scope);
+
+                // Pass the registered service worker to Firebase Messaging
+                getToken(messaging, { 
+                    vapidKey: "BMImHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg", 
+                    serviceWorkerRegistration: registration 
+                })
+                .then((currentToken) => {
+                    if (currentToken) {
+                        console.log("FCM Registration Token:", currentToken);
+                    } else {
+                        console.log("No registration token available. Request permission to generate one.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error retrieving FCM token:", error);
+                });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error('Service Worker registration failed:', error);
             });
-        }
-    </script>
+    } else {
+        console.error("Service Worker is not supported in this browser.");
+    }
+</script>
+
 </body>
 </html>
