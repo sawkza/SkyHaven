@@ -10,7 +10,8 @@ const firebaseConfig = {
     storageBucket: "skyhaven-project.appspot.com",
     messagingSenderId: "390818384586",
     appId: "1:390818384586:web:6df306bb9062cfd77a0233",
-    measurementId: "G-ZYB43QHF3G"
+    measurementId: "G-ZYB43QHF3G",
+    vapidKey: "BMlmHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg" // Replace this with your actual VAPID key
 };
 
 // Initialize Firebase
