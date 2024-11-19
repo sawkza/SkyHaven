@@ -1,6 +1,6 @@
 // Import Firebase scripts for messaging
-importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/10.3.0/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/10.3.0/firebase-messaging-compat.js");
 
 // Firebase configuration
 const firebaseConfig = {
@@ -11,7 +11,7 @@ const firebaseConfig = {
     messagingSenderId: "390818384586",
     appId: "1:390818384586:web:6df306bb9062cfd77a0233",
     measurementId: "G-ZYB43QHF3G",
-    vapidKey: "BMlmHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg" // Replace this with your actual VAPID key
+    vapidKey: "BMlmHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg"
 };
 
 // Initialize Firebase
@@ -23,11 +23,14 @@ const messaging = firebase.messaging();
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
     console.log("Received background message: ", payload);
-    const notificationTitle = payload.notification.title;
+    const notificationTitle = payload.notification.title || "Default Title";
     const notificationOptions = {
-        body: payload.notification.body,
-        icon: '/static/icon-192x192.png' // Update the icon path if necessary
+        body: payload.notification.body || "Default Body",
+        icon: '/static/icon-192x192.png'
     };
 
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
+
+// Add a fetch handler
+self.addEventListener('fetch', (event
