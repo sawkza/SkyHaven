@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-const serviceAccount = require('./skyhaven-project-7e626753c6cf.json');
+const serviceAccount = require('./firebase_key.json');
 
 // Initialize the Firebase app
 admin.initializeApp({

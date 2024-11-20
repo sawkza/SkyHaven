@@ -71,12 +71,20 @@ button:hover {
     display: none;
     margin-top: 10px;
 }
+.loading-animation {
+    display: none;
+    margin-top: 10px;
+}
+.loading-animation img {
+    width: 50px;
+    height: 50px;
+}
 </style>
 </head>
 <body>
 <div class="container">
     <h1>SkyHaven - Airspace Monitor</h1>
-    <h2>အန္တရာယ်ရှိသော လေယာဥ်များ အသုံးပြုသူ၏ပိုက်နက် Area ထဲသို့ ဝင်ရောက်လာပါက အသိပေးသော စနစ်</h2>
+    <h2>အန္တရာယ်ရှိသော လေယာဉ်များ အသုံးပြုသူ၏ပိုက်နက် Area ထဲသို့ ဝင်ရောက်လာပါက အသိပေးသော စနစ်</h2>
     <button onclick="getUserLocation()">Share Location</button>
 
     <div>
@@ -87,11 +95,14 @@ button:hover {
     <button class="ok-button" id="okButton" onclick="confirmSettings()">OK</button>
 
     <div class="advice">
-        <p>Kmနေရာတွင်၈ကိုရေးရန်အကြံပြုပါသည် (We advise setting the radius to 8 km)</p>
+        <p>Kmနေရာတွင်15မှ၂၀ရေးရန်အကြံပြုပါသည် (We advise setting the radius to ၁၅to20 km)</p>
         <p>1 mile = 1.60934 km</p>
     </div>
 
     <p>Developed by Palaung Lay Company Limited</p>
+    <div class="loading-animation" id="loadingAnimation">
+        <img src="/static/loading.gif" alt="Loading...">
+    </div>
     <div class="success-message" id="successMessage">အောင်မြင်ပါသည် - Location Shared Successfully!</div>
 </div>
 
@@ -119,27 +130,23 @@ button:hover {
                 console.log('Service Worker registered with scope:', registration.scope);
 
                 // Retrieve the FCM token
-                getToken(messaging, {
-                    vapidKey: "BMImHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg",
+                return getToken(messaging, {
+                    vapidKey: "BMlmHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg",
                     serviceWorkerRegistration: registration
-                })
-                .then((currentToken) => {
-                    if (currentToken) {
-                        console.log("FCM Registration Token:", currentToken);
-                    } else {
-                        console.log("No registration token available.");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error retrieving FCM token:", error);
                 });
             })
+            .then((currentToken) => {
+                if (currentToken) {
+                    console.log("FCM Registration Token:", currentToken);
+                } else {
+                    console.error("No registration token available.");
+                }
+            })
             .catch((error) => {
-                console.error("Service Worker registration failed:", error);
+                console.error("Error retrieving FCM token:", error);
             });
     }
 </script>
-
 <script>
     let alertRadiusKm = 8; // Default recommended radius
 
@@ -154,10 +161,20 @@ button:hover {
     }
 
     function getUserLocation() {
+        const loadingAnimation = document.getElementById("loadingAnimation");
+        loadingAnimation.style.display = "block";
+
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(sendLocation, handleError);
+            navigator.geolocation.getCurrentPosition((position) => {
+                sendLocation(position);
+                loadingAnimation.style.display = "none";
+            }, (error) => {
+                handleError(error);
+                loadingAnimation.style.display = "none";
+            });
         } else {
             alert("Geolocation is not supported by this browser.");
+            loadingAnimation.style.display = "none";
         }
     }
 
