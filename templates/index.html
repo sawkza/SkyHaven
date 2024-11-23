@@ -95,7 +95,7 @@ button:hover {
     <button class="ok-button" id="okButton" onclick="confirmSettings()">OK</button>
 
     <div class="advice">
-        <p>Kmနေရာတွင်15မှ၂၀ရေးရန်အကြံပြုပါသည် (We advise setting the radius to ၁၅to20 km)</p>
+        <p>Kmနေရာတွင်15မှ20ကိုရေးရန်အကြံပြုပါသည် (We advise setting the radius to 15-20 km)</p>
         <p>1 mile = 1.60934 km</p>
     </div>
 
@@ -107,8 +107,8 @@ button:hover {
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-messaging.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCxQD-mgdlGObPULe6SrkRz2pOIlW0e3qk",
@@ -222,7 +222,7 @@ button:hover {
     }
 
     function alertNotification(message) {
-        const notificationMessage = "လေယာဥ်တစ်စင်းသည် သင်၏ဧရိယာအတွင်း ဝင်ရောက်လာနေပါသည်!\n" + message;
+        const notificationMessage = "လေယာဉ်တစ်စင်းသည် သင်၏ဧရိယာအတွင်း ဝင်ရောက်လာနေပါသည်!\n" + message;
         const options = {
             icon: '/static/icon-192x192.png',
             badge: '/static/icon-192x192.png',
