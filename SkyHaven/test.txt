@@ -1,1 +1,1 @@
-"Test push after cleaning history" 
+"Test push after cleaning repository" 
