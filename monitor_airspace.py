@@ -23,7 +23,6 @@ def manifest():
 
 @app.route('/service-worker.js')
 def service_worker():
-    """Serve the service-worker.js file from the root directory."""
     return send_from_directory('.', 'service-worker.js')
 
 @app.route('/location', methods=['POST'])
