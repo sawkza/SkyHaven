@@ -73,62 +73,43 @@ button:hover {
 }
 .loading-animation {
     display: none;
-    position: relative;
     margin: 20px auto;
-    width: 60px;
-    height: 60px;
-}
-.missile {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: red;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e0e0e0;
+    border-top: 4px solid green;
     border-radius: 50%;
-    animation: missile-move 2s linear infinite;
+    animation: spin 1s linear infinite;
 }
-.jet {
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    background-color: blue;
-    border-radius: 50%;
-    animation: jet-move 2s linear infinite reverse;
-}
-@keyframes missile-move {
-    0% {
-        transform: translate(30px, 0px) rotate(0deg);
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
     }
-    25% {
-        transform: translate(42px, 18px) rotate(90deg);
-    }
-    50% {
-        transform: translate(30px, 42px) rotate(180deg);
-    }
-    75% {
-        transform: translate(18px, 18px) rotate(270deg);
-    }
-    100% {
-        transform: translate(30px, 0px) rotate(360deg);
-    }
-}
-@keyframes jet-move {
-    0% {
-        transform: translate(30px, 0px) rotate(0deg);
-    }
-    25% {
-        transform: translate(18px, 18px) rotate(-90deg);
-    }
-    50% {
-        transform: translate(30px, 42px) rotate(-180deg);
-    }
-    75% {
-        transform: translate(42px, 18px) rotate(-270deg);
-    }
-    100% {
-        transform: translate(30px, 0px) rotate(-360deg);
+    to {
+        transform: rotate(360deg);
     }
 }
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-messaging-compat.js"></script>
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCxQD-mgdlGObPULe6SrkRz2pOIlW0e3qk",
+        authDomain: "skyhaven-project.firebaseapp.com",
+        projectId: "skyhaven-project",
+        storageBucket: "skyhaven-project.appspot.com",
+        messagingSenderId: "390818384586",
+        appId: "1:390818384586:web:6df306bb9062cfd77a0233",
+        measurementId: "G-ZYB43QHF3G"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Initialize Firebase Messaging
+    const messaging = firebase.messaging();
+</script>
 </head>
 <body>
 <div class="container">
@@ -149,10 +130,7 @@ button:hover {
     </div>
 
     <p>Developed by Palaung Lay Company Limited</p>
-    <div class="loading-animation" id="loadingAnimation">
-        <div class="missile"></div>
-        <div class="jet"></div>
-    </div>
+    <div class="loading-animation" id="loadingAnimation"></div>
     <div class="success-message" id="successMessage">အောင်မြင်ပါသည် - Location Shared Successfully!</div>
 </div>
 
