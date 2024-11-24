@@ -72,4 +72,11 @@ def check_aircraft():
 
     except requests.exceptions.RequestException as e:
         print("Error fetching aircraft data:", str(e))
-        return jsonify({"error": "Failed to f
+        return jsonify({"error": "Failed to fetch aircraft data"}), 500
+    except Exception as e:
+        print("Unexpected error:", str(e))
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
