@@ -73,20 +73,59 @@ button:hover {
 }
 .loading-animation {
     display: none;
-    margin-top: 10px;
-    width: 50px;
-    height: 50px;
-    border: 5px solid #ccc;
-    border-top-color: #007bff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+    position: relative;
+    margin: 20px auto;
+    width: 60px;
+    height: 60px;
 }
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
+.missile {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    animation: missile-move 2s linear infinite;
+}
+.jet {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: blue;
+    border-radius: 50%;
+    animation: jet-move 2s linear infinite reverse;
+}
+@keyframes missile-move {
+    0% {
+        transform: translate(30px, 0px) rotate(0deg);
     }
-    to {
-        transform: rotate(360deg);
+    25% {
+        transform: translate(42px, 18px) rotate(90deg);
+    }
+    50% {
+        transform: translate(30px, 42px) rotate(180deg);
+    }
+    75% {
+        transform: translate(18px, 18px) rotate(270deg);
+    }
+    100% {
+        transform: translate(30px, 0px) rotate(360deg);
+    }
+}
+@keyframes jet-move {
+    0% {
+        transform: translate(30px, 0px) rotate(0deg);
+    }
+    25% {
+        transform: translate(18px, 18px) rotate(-90deg);
+    }
+    50% {
+        transform: translate(30px, 42px) rotate(-180deg);
+    }
+    75% {
+        transform: translate(42px, 18px) rotate(-270deg);
+    }
+    100% {
+        transform: translate(30px, 0px) rotate(-360deg);
     }
 }
 </style>
@@ -110,7 +149,10 @@ button:hover {
     </div>
 
     <p>Developed by Palaung Lay Company Limited</p>
-    <div class="loading-animation" id="loadingAnimation"></div>
+    <div class="loading-animation" id="loadingAnimation">
+        <div class="missile"></div>
+        <div class="jet"></div>
+    </div>
     <div class="success-message" id="successMessage">အောင်မြင်ပါသည် - Location Shared Successfully!</div>
 </div>
 
