@@ -26,10 +26,13 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification.title || 'Default Title';
     const notificationOptions = {
         body: payload.notification.body || 'Default Body',
-        icon: '/static/icon-192x192.png', // Path to your notification icon
-        sound: '/static/alert.mp3', // Path to your alert sound
-        image: 'https://picsum.photos/200/300' // Random image URL
+        icon: payload.notification.icon || '/static/icon-192x192.png', // Fallback to default icon
+        image: payload.data?.image || 'https://picsum.photos/200/300', // Handle custom image via data
     };
+
+    // Play alert sound (this won't work on all browsers but is valid for custom logic)
+    const audio = new Audio('/static/alert.mp3');
+    audio.play().catch((err) => console.warn('Audio play failed:', err));
 
     // Display the notification
     self.registration.showNotification(notificationTitle, notificationOptions);
