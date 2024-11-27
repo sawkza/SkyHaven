@@ -22,11 +22,15 @@ const messaging = firebase.messaging();
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
     console.log('Received background message ', payload);
+
     const notificationTitle = payload.notification.title || 'Default Title';
     const notificationOptions = {
         body: payload.notification.body || 'Default Body',
-        icon: '/static/icon-192x192.png'
+        icon: '/static/icon-192x192.png', // Path to your notification icon
+        sound: '/static/alert.mp3', // Path to your alert sound
+        image: 'https://picsum.photos/200/300' // Random image URL
     };
 
+    // Display the notification
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
