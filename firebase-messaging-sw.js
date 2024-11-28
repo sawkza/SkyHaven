@@ -30,10 +30,38 @@ messaging.onBackgroundMessage((payload) => {
         image: payload.data?.image || 'https://picsum.photos/200/300', // Handle custom image via data
     };
 
-    // Play alert sound (this won't work on all browsers but is valid for custom logic)
-    const audio = new Audio('/static/alert.mp3');
-    audio.play().catch((err) => console.warn('Audio play failed:', err));
+    // Fetch alert.mp3 to ensure it is loaded
+    fetch('/static/alert.mp3')
+        .then(() => {
+            // Play alert sound
+            const audio = new Audio('/static/alert.mp3');
+            audio.play().catch((err) => console.warn('Audio play failed:', err));
+        })
+        .catch((err) => console.warn('Failed to fetch alert.mp3:', err));
 
     // Display the notification
+    self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Ensure `push` event is handled correctly
+self.addEventListener('push', (event) => {
+    console.log('Push event received:', event.data?.json());
+
+    const data = event.data?.json() || {};
+    const notificationTitle = data.notification?.title || 'Default Push Title';
+    const notificationOptions = {
+        body: data.notification?.body || 'Default Push Body',
+        icon: data.notification?.icon || '/static/icon-192x192.png',
+    };
+
+    // Fetch alert.mp3 during push event
+    fetch('/static/alert.mp3')
+        .then(() => {
+            // Play alert sound
+            const audio = new Audio('/static/alert.mp3');
+            audio.play().catch((err) => console.warn('Audio play failed:', err));
+        })
+        .catch((err) => console.warn('Failed to fetch alert.mp3:', err));
+
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
