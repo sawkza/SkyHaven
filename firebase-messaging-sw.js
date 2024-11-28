@@ -43,3 +43,11 @@ messaging.onBackgroundMessage((payload) => {
 self.addEventListener('fetch', (event) => {
     console.log("Fetch intercepted for:", event.request.url);
 });
+
+// Add a notification click handler
+self.addEventListener('notificationclick', (event) => {
+    console.log('Notification clicked:', event.notification);
+    const audio = new Audio('/static/alert.mp3');
+    audio.play().catch((err) => console.error('Audio play failed:', err));
+    event.notification.close();
+});

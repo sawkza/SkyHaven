@@ -26,32 +26,25 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification.title || "Default Title";
     const notificationOptions = {
         body: payload.notification.body || "Default Body",
-        icon: '/static/icon-192x192.png'
+        icon: '/static/icon-192x192.png',
     };
 
     self.registration.showNotification(notificationTitle, notificationOptions);
+
+    // Play alert sound on receiving background notification
+    const audio = new Audio('/static/alert.mp3');
+    audio.play().catch((err) => console.error('Audio play failed:', err));
 });
 
-// Add a fetch handler
+// Add fetch handler
 self.addEventListener('fetch', (event) => {
     console.log("Fetch intercepted for:", event.request.url);
 });
 
-// Add a push event handler
-self.addEventListener('push', (event) => {
-    if (event.data) {
-        const payload = event.data.json();
-        console.log("Push event received:", payload);
-        const notificationTitle = payload.notification.title || "Push Notification Title";
-        const notificationOptions = {
-            body: payload.notification.body || "Push Notification Body",
-            icon: payload.notification.icon || '/static/icon-192x192.png',
-            image: payload.notification.image || '/static/default-image.png'
-        };
-
-        // Display the notification
-        self.registration.showNotification(notificationTitle, notificationOptions);
-    } else {
-        console.log("Push event but no data!");
-    }
+// Add notification click handler
+self.addEventListener('notificationclick', (event) => {
+    console.log('Notification clicked:', event.notification);
+    const audio = new Audio('/static/alert.mp3');
+    audio.play().catch((err) => console.error('Audio play failed:', err));
+    event.notification.close();
 });
