@@ -27,13 +27,13 @@ messaging.onBackgroundMessage((payload) => {
     const notificationOptions = {
         body: payload.notification.body || "Default Body",
         icon: payload.notification.icon || '/static/icon-192x192.png',
-        image: payload.data?.image || 'https://picsum.photos/200/300',
+        image: payload.notification.image, // Include image from payload if available
     };
 
-    // Check custom data for sound
-    if (payload.data && payload.data.playSound) {
+    // Play sound if "playSound" key exists in the data payload
+    if (payload.data?.playSound) {
         const audio = new Audio(payload.data.playSound);
-        audio.play().catch((err) => console.error('Audio play failed:', err));
+        audio.play().catch((err) => console.error("Audio play failed:", err));
     }
 
     self.registration.showNotification(notificationTitle, notificationOptions);
@@ -47,7 +47,13 @@ self.addEventListener('fetch', (event) => {
 // Add a notification click handler
 self.addEventListener('notificationclick', (event) => {
     console.log('Notification clicked:', event.notification);
+
+    // Play alert sound on notification click
     const audio = new Audio('/static/alert.mp3');
     audio.play().catch((err) => console.error('Audio play failed:', err));
-    event.notification.close();
+
+    event.notification.close(); // Close the notification
+    event.waitUntil(
+        clients.openWindow(event.notification.data?.url || '/')
+    );
 });
