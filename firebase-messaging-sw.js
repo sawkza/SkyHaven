@@ -23,28 +23,32 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
     console.log("Received background message: ", payload);
 
-    // Extract notification details
-    const notificationTitle = payload.notification.title || "Default Title";
+    const notificationTitle = payload.notification?.title || "Default Title";
     const notificationOptions = {
-        body: payload.notification.body || "Default Body",
-        icon: payload.notification.icon || '/static/icon-192x192.png',
-        image: payload.notification.image || null,
+        body: payload.notification?.body || "Default Body",
+        icon: payload.notification?.icon || '/static/icon-192x192.png',
     };
 
-    // Check if a custom sound is provided in the data payload
-    if (payload.data?.playSound) {
-        const audio = new Audio(payload.data.playSound);
-        audio.play().catch((err) => console.error("Audio play failed:", err));
-    }
+    // Attempt to fetch and play audio
+    fetch('/static/alert.mp3')
+        .then(() => {
+            const audio = new Audio('/static/alert.mp3');
+            return audio.play();
+        })
+        .then(() => console.log('Audio played successfully'))
+        .catch((err) => console.error('Audio play failed:', err));
 
     // Show the notification
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
+// Add a fetch handler
+self.addEventListener('fetch', (event) => {
+    console.log("Fetch intercepted for:", event.request.url);
+});
+
 // Add a notification click handler
 self.addEventListener('notificationclick', (event) => {
     console.log('Notification clicked:', event.notification);
-    const audio = new Audio('/static/alert.mp3');
-    audio.play().catch((err) => console.error('Audio play failed:', err));
     event.notification.close();
 });
