@@ -23,31 +23,25 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
     console.log("Received background message: ", payload);
 
-    const notificationTitle = payload.notification?.title || "Default Title";
+    // Extract notification details
+    const notificationTitle = payload.notification.title || "Default Title";
     const notificationOptions = {
-        body: payload.notification?.body || "Default Body",
-        icon: payload.notification?.icon || '/static/icon-192x192.png',
-        image: payload.notification?.image || 'https://picsum.photos/200/300',
+        body: payload.notification.body || "Default Body",
+        icon: payload.notification.icon || '/static/icon-192x192.png',
+        image: payload.notification.image || null,
     };
 
-    // Fetch and play audio
-    const sound = payload.data?.playSound || '/static/alert.mp3';
-    fetch(sound)
-        .then(() => {
-            const audio = new Audio(sound);
-            return audio.play();
-        })
-        .catch((err) => console.error("Audio fetch/play failed:", err));
+    // Check if a custom sound is provided in the data payload
+    if (payload.data?.playSound) {
+        const audio = new Audio(payload.data.playSound);
+        audio.play().catch((err) => console.error("Audio play failed:", err));
+    }
 
-    // Show notification
+    // Show the notification
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// Add fetch and notification click handlers
-self.addEventListener('fetch', (event) => {
-    console.log("Fetch intercepted for:", event.request.url);
-});
-
+// Add a notification click handler
 self.addEventListener('notificationclick', (event) => {
     console.log('Notification clicked:', event.notification);
     const audio = new Audio('/static/alert.mp3');
