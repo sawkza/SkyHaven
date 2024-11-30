@@ -243,6 +243,27 @@ button:hover {
                 console.error('Service Worker registration failed:', error);
             });
     }
+
+    // Listen for messages from Service Worker
+    navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === "PLAY_SOUND") {
+            console.log("Message received from Service Worker:", event.data.payload);
+
+            // Play the audio
+            const audio = new Audio('/static/alert.mp3');
+            audio.play()
+                .then(() => console.log("Audio played successfully"))
+                .catch((err) => console.error("Audio play failed:", err));
+        }
+    });
+
+    // Register Firebase Messaging Service Worker
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(function (registration) {
+            console.log('Firebase Messaging Service Worker registered with scope:', registration.scope);
+        }).catch(function (error) {
+            console.error('Firebase Messaging Service Worker registration failed:', error);
+        });
 </script>
 </body>
 </html>
