@@ -265,5 +265,31 @@ button:hover {
             console.error('Firebase Messaging Service Worker registration failed:', error);
         });
 </script>
+<script>
+    messaging.getToken({ vapidKey: 'BMlmHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg' })
+        .then((currentToken) => {
+            if (currentToken) {
+                console.log("FCM Token:", currentToken);
+                // Subscribe to the airspace-alerts topic
+                fetch('https://iid.googleapis.com/iid/v1/' + currentToken + '/rel/topics/airspace-alerts', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'key=AIzaSyCxQD-mgdlGObPULe6SrkRz2pOIlW0e3qk',
+                        'Content-Type': 'application/json',
+                    },
+                }).then((response) => {
+                    if (response.ok) {
+                        console.log("Successfully subscribed to airspace-alerts topic.");
+                    } else {
+                        console.error("Failed to subscribe to topic.");
+                    }
+                });
+            } else {
+                console.warn("No FCM registration token available. Request permission to generate one.");
+            }
+        }).catch((err) => {
+            console.error("An error occurred while retrieving the FCM token:", err);
+        });
+</script>
 </body>
 </html>
