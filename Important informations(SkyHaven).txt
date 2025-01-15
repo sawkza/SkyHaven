@@ -1,0 +1,4 @@
+api key -AIzaSyCxQD-mgdlGObPULe6SrkRz2pOIlW0e3qk
+vapid key-BMlmHQtxNDDZBtOvsgXUfncF92BDk8SKIymFjJwMSEg9ho31b71A3paBzPsBIUII6137I22b5C5sMavVLqGdlsg
+Render is connected to the github account-nanntawthway5@gmail.com Pw-Wegojim25505
+server key-DIwVZuMYkiXJaOm8jfOPRHAE9DtjLP_zl9c-YrDYrhU (Find it by clicking the 3 dots beside vapid key and click show private key)

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "skyhaven-project",
+  "private_key_id": "d15244b9a371dfde4d9380be59480c107408c768",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC2rvetr51UtfBF\nnb61RAkeN0pq/xnxLVHCDSD/AaOHhO+YEmdOhiskow7mkrxxHmZgicEQjvTwWN8F\nxZbseiO43aWxecdAllNFh+D4MfNK8+8dOWXF4jww7OL7LC3MdaIKQMJipdpq9j08\nVahd4tQ3cSn692i7ibOMBLspMMe6xFNkHidiOxlW+nUNiBfXp3zrpha1weoadbIK\nCE48GQSjMIKe/IAzaoo9/iyMmXnUJzvL46HpSdWBVEN0VEAb5J1Tv9pFsrVCITBo\n7cpD577oqOeS6xC7OT88Iy2kTeSRzIqOh6qy3KqvxvodrOBwVIRKoJzJKu5IwwTs\n5MoBfjw1AgMBAAECggEAJnygI5Be9gzKjPAZ0Hh/70S4wefyoDPrCJXZgL/ootFn\n5MLjztBHYJWVuw/o8W/1I5uB+CoWAljGy6GAFVv6EKVplgVQ7BN/gaOJyuBDIGRZ\n2O9RuKncAna1rzL0hyG1PLG+Aihs5qHv7rkhGn6CNRf7PytGflQZZoNMpvXm7jq5\nBTsmLmTKsp0nkQHRfiXy8Ujdqc2DXaDxV/qrJxuylV4GDU+wcSJC6RdrzzO2vqty\nWWAEQPqHaXeS7zK0dglSHm4DZViQ6uum42JX2lOXknRY/VTOrgCrrh4CLQmCQVq7\np5BX0yMy2Fq8pABdC8mWBLem4kyeGN9BivkvOmUR4QKBgQDmXllr/8XAEvr0Mz6z\nd5Zy8Aors99FvRd0EvvsvE6Pn9lbJU1ub3BcQaryB2BwgtlBOuWLw9LJUtgCveTI\ne6Td1bZPrswQpHhPR0Pu4MavXMq9qr0VCNOvzTkfAVtefEDv7GKFjNkJESpARawT\n7DCbArY2hVWZ69FaieY6lIP63QKBgQDLAmQMxVu5D6PeaMBFD0FbIkVxNzA3PxWd\nwD1wUV28i1RrvP5gDN5ip62G0y3pn5UfGJjSGYwHdCB3PzPv+4NwgszI4bKEu/uT\nxsUIvtOF1tA2X2dxShhlrqDGxP68sN297jhdgVRqiqalSUpetjCr2RAs76V8T364\nYZJeMBBVOQKBgH04vBLgrXWC27byRBr53mYL5Ptsguk9qAoIZ7h/g5S+pz/MPxLQ\nsJr1dx6os9t0xPOYOD6I64NT7OdQoZP44d1T1g3qTjKdtGgjrOGkfVvFbM88iBtu\n+OKPA4W/DxOFJydDryo5LaCoG/dj5+3MbX9VMgbg428PqHU2kFc3c6ZhAoGBAJVj\nrgJj3UqCwuDxDsQDJOIOhzF4HkgZaSvMAqo7hhIwKbCaxEokTiYlJCH6F2g7If5f\nGF5LpGr7vsRhwzOPTzslVdNhmv/oYYpulCIKYxeza0cHz9RjZS62YePDpX1vXc3d\nlqbgfCFm5JjvJQYrZgef1TJsK8gdq6+9RXuAPRSpAoGBALyD09dXxKHZb7NVac0l\nh9ErS48wOy9XgmYjqkrCjMvTVt/1hOz9NeKZYjNs+5K2eI8uosPHansi7yo0mbVm\nFb8Gay97tQDBMu9CBIWSyphe7vpcYyRAsD/2TZhbGADtIimh8rNfq0cvExO/VSaV\nL5TGFWCExm2FfN1Z9KvWzawD\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-ddag4@skyhaven-project.iam.gserviceaccount.com",
+  "client_id": "118188529719278018632",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-ddag4%40skyhaven-project.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
